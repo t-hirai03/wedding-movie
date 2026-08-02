@@ -1,0 +1,25 @@
+# 写真・音源などの素材（顔写真を含むため絶対にコミットしない）
+photos/
+*.jpg
+*.jpeg
+*.png
+*.heic
+*.tif
+*.tiff
+*.mov
+*.mp4
+*.wav
+*.m4a
+*.mp3
+
+# 生成物
+out/
+
+# Final Cut Pro ライブラリ
+*.fcpbundle/
+
+# Final Cut Pro 同梱DTD（Apple の著作物のため再配布しない）
+FCPXMLv1_*.dtd
+
+# macOS
+.DS_Store
