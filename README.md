@@ -31,6 +31,25 @@ python3 build_fcpxml.py photos \
 | `--ken-burns` | ゆっくりズームの量（0で無効） |
 | `--conform` | `fill`（画面いっぱい・端が切れる）/ `fit`（全体表示・余白）/ `none` |
 | `--format` | `1080p30` / `1080p2997` / `1080p24` / `4k30` |
+| `--assets-only` | プロジェクトを作らず、イベントに素材クリップだけ読み込む |
+| `--keyword` | 各クリップに付けるキーワード（キーワードコレクションになる） |
+
+## 素材だけ読み込む
+
+タイムラインを作らず、写真をイベントの素材として入れるだけの場合。
+
+```bash
+python3 build_fcpxml.py photos \
+  -o out/assets_only.fcpxml \
+  --event "wedding-movie" \
+  --library ~/Movies/結婚式.fcpbundle \
+  --assets-only \
+  --keyword "画像データ"
+```
+
+Final Cut のフォルダにはクリップを入れられないため、まとめたい場合は `--keyword` を使う。同名のキーワードコレクション（サイドバーの鍵マーク）が作られ、そこに全クリップが入る。
+
+イベント名は**ASCIIで指定する**こと。日本語名だと既存イベントに一致せず `名前 2` が新規作成される。詳細は [.claude/rules/final-cut.md](./.claude/rules/final-cut.md) を参照。
 
 ## 検証
 

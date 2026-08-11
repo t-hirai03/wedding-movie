@@ -79,6 +79,7 @@ def build(photos: list[Path], args) -> str:
         f'    <format id="r0" name="{fmt_name}" frameDuration="{tl.frame_duration}"'
         f' width="{width}" height="{height}" colorSpace="1-1-1 (Rec. 709)"/>'
     ]
+    clips = []
     spine = []
     offset = 0
 
@@ -99,6 +100,16 @@ def build(photos: list[Path], args) -> str:
             f'      <media-rep kind="original-media" src={quoteattr(file_url(photo))}/>'
         )
         resources.append("    </asset>")
+
+        if args.assets_only:
+            clips.append(
+                f'      <asset-clip ref="{asset_id}" name={quoteattr(name)}'
+                f' duration="{tl.time(clip_frames)}" format="{fmt_id}">'
+            )
+            if args.keyword:
+                clips.append(f'        <keyword value={quoteattr(args.keyword)}/>')
+            clips.append("      </asset-clip>")
+            continue
 
         # 前のクリップとの境目にトランジションを置く。FCPは前後クリップのハンドルを
         # 消費するため、後続クリップの offset はずらさない（尺は変わらない）。
@@ -129,18 +140,21 @@ def build(photos: list[Path], args) -> str:
     ]
     if args.library:
         lines.append(f"  <library location={quoteattr(file_url(Path(args.library)) + '/')}>")
-    lines += [
-        f"    <event name={quoteattr(args.event)}>",
-        f"      <project name={quoteattr(args.project)}>",
-        f'        <sequence format="r0" duration="{tl.time(offset)}" tcStart="0s"'
-        ' tcFormat="NDF" audioLayout="stereo" audioRate="48k">',
-        "        <spine>",
-        *spine,
-        "        </spine>",
-        "        </sequence>",
-        "      </project>",
-        "    </event>",
-    ]
+    lines.append(f"    <event name={quoteattr(args.event)}>")
+    if args.assets_only:
+        lines += clips
+    else:
+        lines += [
+            f"      <project name={quoteattr(args.project)}>",
+            f'        <sequence format="r0" duration="{tl.time(offset)}" tcStart="0s"'
+            ' tcFormat="NDF" audioLayout="stereo" audioRate="48k">',
+            "        <spine>",
+            *spine,
+            "        </spine>",
+            "        </sequence>",
+            "      </project>",
+        ]
+    lines.append("    </event>")
     if args.library:
         lines.append("  </library>")
     lines.append("</fcpxml>")
@@ -159,6 +173,9 @@ def main() -> int:
     p.add_argument("--transition", type=float, default=1.0, help="トランジション秒数（0で無効）")
     p.add_argument("--ken-burns", type=float, default=0.12, help="ズーム量（0で無効）")
     p.add_argument("--conform", choices=["fit", "fill", "none"], default="fill")
+    p.add_argument("--assets-only", action="store_true",
+                   help="プロジェクトを作らず、イベントに素材クリップだけ読み込む")
+    p.add_argument("--keyword", help="各クリップに付けるキーワード（キーワードコレクションになる）")
     args = p.parse_args()
 
     photos = sorted(f for f in args.photos_dir.iterdir() if f.suffix.lower() in IMAGE_SUFFIXES)
