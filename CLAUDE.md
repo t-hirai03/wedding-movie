@@ -14,12 +14,14 @@
 |---|---|
 | [README.md](./README.md) | `build_fcpxml.py` の使い方・オプション |
 | [TODO.md](./TODO.md) | タスク一覧、権利処理の状況、未解決事項 |
+| [STRUCTURE.md](./STRUCTURE.md) | ムービーの構成・尺配分・コメント方針 |
 | [BGM.md](./BGM.md) | 音源の購入先・規格品番・ISUM番号 |
 
 作業を始めるときは TODO.md で現在の進捗を確認する。
 
 ## ルール
 
+- [.claude/rules/movie.md](./.claude/rules/movie.md) — 構成・尺の扱い、写真の増減や振り分けの判断基準、プレビューの作り方
 - [.claude/rules/final-cut.md](./.claude/rules/final-cut.md) — Final Cut ライブラリの構成、イベント/プロジェクトの使い分け、状態確認手順
 
 ## 権利処理（重要）
